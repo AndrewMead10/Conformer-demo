@@ -4,7 +4,7 @@ import torch.nn.functional as F
 
 
 class ConformerModel(nn.Module):
-    def __init__(self, dim=512, n_heads=8, n_blocks=1):
+    def __init__(self, dim=144, n_heads=4, n_blocks=1):
         super().__init__()
         self.dim = dim
         self.n_heads = n_heads
@@ -22,9 +22,17 @@ class ConformerBlock(nn.Module):
         super().__init__()
 
         self.ff1 = FeedForwardModule(dim, expansion_factor)
+        print('ff1_params', sum(p.numel()
+              for p in self.ff1.parameters() if p.requires_grad))
         self.att = AttentionModule(dim, n_heads)
+        print('att_params', sum(p.numel()
+              for p in self.att.parameters() if p.requires_grad))
         self.conv = ConvModule(dim, kernel_size)
+        print('conv_params', sum(p.numel()
+              for p in self.conv.parameters() if p.requires_grad))
         self.ff2 = FeedForwardModule(dim, expansion_factor)
+        print('ff2_params', sum(p.numel()
+              for p in self.ff2.parameters() if p.requires_grad))
         self.layer_norm = nn.LayerNorm(dim)
 
     def forward(self, x):
